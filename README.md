@@ -40,5 +40,33 @@ Omawrite at the size it is designed around; larger and smaller sizes scale from 
 - Qt 6: `qt6-base`, `qt6-declarative`, `qt6-quickcontrols2`
 - `xdg-desktop-portal` and a portal backend
 
+## Build and Install
+
+Build and test locally:
+
+```bash
+# Build the binary
+./bin/build
+
+# Run the test suite
+./bin/test
+
+# Launch the local build
+./build/omawrite
+```
+
+Install system-wide on Omarchy / Arch:
+
+```bash
+./bin/install
+```
+
+Or build the package archive and install via pacman:
+
+```bash
+cd pkgbuild && makepkg -f
+sudo pacman -U omawrite-*.pkg.tar.zst
+```
+
 The IBM Plex Mono font is bundled under the SIL Open Font License 1.1; see
 `fonts/OFL.txt`. The font is copyright IBM Corp.
