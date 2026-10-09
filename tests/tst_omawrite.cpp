@@ -257,6 +257,46 @@ private slots:
         QCOMPARE(editor->property("font").value<QFont>().pixelSize(), 15);
     }
 
+    void zoomsEditorFontSize() {
+        const QString mainQmlPath = QFINDTESTDATA("../src/Main.qml");
+        QVERIFY(!mainQmlPath.isEmpty());
+
+        Backend backend;
+        QQmlEngine engine;
+        engine.rootContext()->setContextProperty(QStringLiteral("backend"), &backend);
+        QQmlComponent component(&engine, QUrl::fromLocalFile(mainQmlPath));
+        QVERIFY2(component.isReady(), qPrintable(component.errorString()));
+        QScopedPointer<QObject> window(component.create());
+        QVERIFY2(window, qPrintable(component.errorString()));
+
+        QObject *editor = window->findChild<QObject *>(QStringLiteral("sourceEditor"));
+        QVERIFY(editor);
+
+        QCOMPARE(window->property("zoomFactor").toReal(), 1.0);
+        QCOMPARE(editor->property("font").value<QFont>().pixelSize(), 20);
+
+        QVERIFY(QMetaObject::invokeMethod(window.data(), "zoomIn"));
+        QCOMPARE(window->property("zoomFactor").toReal(), 1.1);
+        QCOMPARE(editor->property("font").value<QFont>().pixelSize(), 22);
+
+        QVERIFY(QMetaObject::invokeMethod(window.data(), "zoomOut"));
+        QCOMPARE(window->property("zoomFactor").toReal(), 1.0);
+        QCOMPARE(editor->property("font").value<QFont>().pixelSize(), 20);
+
+        QVERIFY(QMetaObject::invokeMethod(window.data(), "zoomIn"));
+        QVERIFY(QMetaObject::invokeMethod(window.data(), "zoomIn"));
+        QCOMPARE(window->property("zoomFactor").toReal(), 1.2);
+
+        QVERIFY(QMetaObject::invokeMethod(window.data(), "resetZoom"));
+        QCOMPARE(window->property("zoomFactor").toReal(), 1.0);
+
+        QVERIFY(QMetaObject::invokeMethod(window.data(), "setZoomFactor", Q_ARG(QVariant, 5.0)));
+        QCOMPARE(window->property("zoomFactor").toReal(), 3.0);
+
+        QVERIFY(QMetaObject::invokeMethod(window.data(), "setZoomFactor", Q_ARG(QVariant, 0.1)));
+        QCOMPARE(window->property("zoomFactor").toReal(), 0.5);
+    }
+
     void remembersLastSaveDirectory() {
         QTemporaryDir saveDirectory;
         QVERIFY(saveDirectory.isValid());

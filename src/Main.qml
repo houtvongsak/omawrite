@@ -25,7 +25,8 @@ ApplicationWindow {
     // `omarchy display text size` drives) anchored so its 12px default leaves
     // the app at the sizes it was designed around.
     readonly property real textScale: backend.textScale
-    readonly property int editorFontPixelSize: scaledSize(20)
+    property real zoomFactor: 1.0
+    readonly property int editorFontPixelSize: Math.max(8, Math.round(scaledSize(20) * win.zoomFactor))
     readonly property int footerHeight: scaledSize(32)
     readonly property int editorWidth: Math.min(
         Math.round(writerFontMetrics.averageCharacterWidth * 65),
@@ -90,6 +91,22 @@ ApplicationWindow {
         win.visibility = win.visibility === Window.FullScreen
             ? Window.Windowed
             : Window.FullScreen;
+    }
+
+    function zoomIn() {
+        setZoomFactor(zoomFactor + 0.1);
+    }
+
+    function zoomOut() {
+        setZoomFactor(zoomFactor - 0.1);
+    }
+
+    function resetZoom() {
+        zoomFactor = 1.0;
+    }
+
+    function setZoomFactor(factor) {
+        zoomFactor = Math.max(0.5, Math.min(3.0, Math.round(factor * 10) / 10));
     }
 
     function updateSearch() {
@@ -238,6 +255,24 @@ ApplicationWindow {
         onActivated: win.moveSearch(1)
     }
 
+    Shortcut {
+        sequences: [StandardKey.ZoomIn, "Ctrl+=", "Ctrl++"]
+        context: Qt.ApplicationShortcut
+        onActivated: win.zoomIn()
+    }
+
+    Shortcut {
+        sequences: [StandardKey.ZoomOut, "Ctrl+-"]
+        context: Qt.ApplicationShortcut
+        onActivated: win.zoomOut()
+    }
+
+    Shortcut {
+        sequence: "Ctrl+0"
+        context: Qt.ApplicationShortcut
+        onActivated: win.resetZoom()
+    }
+
     Connections {
         target: backend
 
@@ -332,7 +367,7 @@ ApplicationWindow {
         standardButtons: Dialog.Close
         anchors.centerIn: parent
         contentItem: Label {
-            text: "Ctrl+S  Save\nCtrl+Shift+S  Save As\nCtrl+O  Open\nCtrl+N  New Window\nCtrl+F  Find\nCtrl+H  Find and Replace\nCtrl+B  Bold\nCtrl+I  Italic\nCtrl+K  Link\nCtrl+P  Print\nF11 / Super+F  Fullscreen\nCtrl+?  Shortcuts"
+            text: "Ctrl+S  Save\nCtrl+Shift+S  Save As\nCtrl+O  Open\nCtrl+N  New Window\nCtrl+F  Find\nCtrl+H  Find and Replace\nCtrl+B  Bold\nCtrl+I  Italic\nCtrl+K  Link\nCtrl+P  Print\nCtrl++ / -  Zoom In / Out\nCtrl+0  Reset Zoom\nF11 / Super+F  Fullscreen\nCtrl+?  Shortcuts"
             lineHeight: 1.5
         }
     }
@@ -462,12 +497,39 @@ ApplicationWindow {
                 // wheel notches arrive with only angleDelta set, while
                 // finger scrolling carries pixel-precise pixelDelta.
                 acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                acceptedModifiers: Qt.NoModifier
                 onWheel: function(wheel) {
                     scrollLinger.restart();
                     if (wheel.pixelDelta.y !== 0)
                         editorFlick.scrollTo(editorFlick.clampContentY(editorFlick.contentY - wheel.pixelDelta.y));
                     else
                         editorFlick.scrollByWheel(wheel);
+                    wheel.accepted = true;
+                }
+            }
+
+            WheelHandler {
+                acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                acceptedModifiers: Qt.ControlModifier
+                property real zoomAccumulator: 0
+                onWheel: function(wheel) {
+                    var delta = wheel.angleDelta.y !== 0 ? wheel.angleDelta.y : wheel.pixelDelta.y;
+                    if (delta === 0)
+                        return;
+
+                    zoomAccumulator += delta;
+                    var stepThreshold = 120;
+                    if (Math.abs(zoomAccumulator) >= stepThreshold) {
+                        var steps = Math.trunc(zoomAccumulator / stepThreshold);
+                        zoomAccumulator %= stepThreshold;
+                        if (steps > 0) {
+                            for (var i = 0; i < steps; ++i)
+                                win.zoomIn();
+                        } else {
+                            for (var j = 0; j < -steps; ++j)
+                                win.zoomOut();
+                        }
+                    }
                     wheel.accepted = true;
                 }
             }
