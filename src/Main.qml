@@ -191,7 +191,7 @@ ApplicationWindow {
     }
 
     Shortcut {
-        sequence: "Ctrl+?"
+        sequences: ["Ctrl+?", "Ctrl+Shift+?", "Ctrl+/", "F1"]
         context: Qt.ApplicationShortcut
         onActivated: shortcutsDialog.open()
     }
@@ -360,16 +360,15 @@ ApplicationWindow {
         onReloadRequested: backend.reloadFromDisk()
     }
 
-    Dialog {
+    ShortcutsDialog {
         id: shortcutsDialog
-        modal: true
-        title: "Keyboard shortcuts"
-        standardButtons: Dialog.Close
-        anchors.centerIn: parent
-        contentItem: Label {
-            text: "Ctrl+S  Save\nCtrl+Shift+S  Save As\nCtrl+O  Open\nCtrl+N  New Window\nCtrl+F  Find\nCtrl+H  Find and Replace\nCtrl+B  Bold\nCtrl+I  Italic\nCtrl+K  Link\nCtrl+P  Print\nCtrl++ / -  Zoom In / Out\nCtrl+0  Reset Zoom\nF11 / Super+F  Fullscreen\nCtrl+?  Shortcuts"
-            lineHeight: 1.5
-        }
+        darkMode: win.darkMode
+        textScale: win.textScale
+        textColor: win.textColor
+        strongTextColor: win.strongTextColor
+        activeButtonColor: backend.themeAccent
+        containerWidth: win.width
+        containerHeight: win.height
     }
 
     Item {
