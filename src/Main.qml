@@ -256,13 +256,13 @@ ApplicationWindow {
     }
 
     Shortcut {
-        sequences: [StandardKey.ZoomIn, "Ctrl+=", "Ctrl++"]
+        sequences: [StandardKey.ZoomIn, "Ctrl+=", "Ctrl++", "Ctrl+Shift+=", "Ctrl+Shift++"]
         context: Qt.ApplicationShortcut
         onActivated: win.zoomIn()
     }
 
     Shortcut {
-        sequences: [StandardKey.ZoomOut, "Ctrl+-"]
+        sequences: [StandardKey.ZoomOut, "Ctrl+-", "Ctrl+_", "Ctrl+Shift+-", "Ctrl+Shift+_"]
         context: Qt.ApplicationShortcut
         onActivated: win.zoomOut()
     }
