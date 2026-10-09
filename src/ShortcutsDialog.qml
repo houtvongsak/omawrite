@@ -105,6 +105,7 @@ Dialog {
                         { key: "Ctrl+K", desc: "Link" },
                         { key: "Ctrl++ / -", desc: "Zoom In / Out" },
                         { key: "Ctrl+0", desc: "Reset Zoom" },
+                        { key: "Ctrl+Shift+W", desc: "Full / Standard Width" },
                         { key: "Ctrl+? / Ctrl+/", desc: "Shortcuts" }
                     ]
                     Row {

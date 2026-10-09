@@ -297,6 +297,34 @@ private slots:
         QCOMPARE(window->property("zoomFactor").toReal(), 0.5);
     }
 
+    void togglesFullWidth() {
+        const QString mainQmlPath = QFINDTESTDATA("../src/Main.qml");
+        QVERIFY(!mainQmlPath.isEmpty());
+
+        Backend backend;
+        QQmlEngine engine;
+        engine.rootContext()->setContextProperty(QStringLiteral("backend"), &backend);
+        QQmlComponent component(&engine, QUrl::fromLocalFile(mainQmlPath));
+        QVERIFY2(component.isReady(), qPrintable(component.errorString()));
+        QScopedPointer<QObject> window(component.create());
+        QVERIFY2(window, qPrintable(component.errorString()));
+
+        QObject *editor = window->findChild<QObject *>(QStringLiteral("sourceEditor"));
+        QVERIFY(editor);
+
+        QCOMPARE(window->property("fullWidth").toBool(), false);
+        const int standardWidth = window->property("editorWidth").toInt();
+
+        QVERIFY(QMetaObject::invokeMethod(window.data(), "toggleFullWidth"));
+        QCOMPARE(window->property("fullWidth").toBool(), true);
+        const int fullWidth = window->property("editorWidth").toInt();
+        QVERIFY(fullWidth >= standardWidth);
+
+        QVERIFY(QMetaObject::invokeMethod(window.data(), "toggleFullWidth"));
+        QCOMPARE(window->property("fullWidth").toBool(), false);
+        QCOMPARE(window->property("editorWidth").toInt(), standardWidth);
+    }
+
     void remembersLastSaveDirectory() {
         QTemporaryDir saveDirectory;
         QVERIFY(saveDirectory.isValid());

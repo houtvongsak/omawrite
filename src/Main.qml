@@ -28,9 +28,13 @@ ApplicationWindow {
     property real zoomFactor: 1.0
     readonly property int editorFontPixelSize: Math.max(8, Math.round(scaledSize(20) * win.zoomFactor))
     readonly property int footerHeight: scaledSize(32)
-    readonly property int editorWidth: Math.min(
+    property bool fullWidth: false
+    readonly property int standardEditorWidth: Math.min(
         Math.round(writerFontMetrics.averageCharacterWidth * 65),
         Math.max(360, width - Math.round(writerFontMetrics.averageCharacterWidth * 20)))
+    readonly property int editorWidth: fullWidth
+        ? (editorFlick ? Math.max(360, editorFlick.width) : Math.max(360, width - 48))
+        : standardEditorWidth
     property bool closeConfirmed: false
     property bool searchOpen: false
     property bool searchUpdating: false
@@ -103,6 +107,10 @@ ApplicationWindow {
 
     function resetZoom() {
         zoomFactor = 1.0;
+    }
+
+    function toggleFullWidth() {
+        fullWidth = !fullWidth;
     }
 
     function setZoomFactor(factor) {
@@ -271,6 +279,12 @@ ApplicationWindow {
         sequence: "Ctrl+0"
         context: Qt.ApplicationShortcut
         onActivated: win.resetZoom()
+    }
+
+    Shortcut {
+        sequences: ["Ctrl+Shift+W", "Alt+W", "Ctrl+Alt+W"]
+        context: Qt.ApplicationShortcut
+        onActivated: win.toggleFullWidth()
     }
 
     Connections {
