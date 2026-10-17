@@ -368,6 +368,7 @@ ApplicationWindow {
 
     ShortcutsDialog {
         id: shortcutsDialog
+        edition: "Personal"
         darkMode: win.darkMode
         textScale: win.textScale
         textColor: win.textColor

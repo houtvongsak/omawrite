@@ -40,8 +40,9 @@ git commit
 
 Run the personal build with `./build/omawrite`. The installed system executable
 is separate; use `./bin/install` when you decide to install the personal build.
-The version remains upstream's 0.7.0; the Git branch and commit identify the
-personal additions.
+The version follows upstream's application version. The shortcuts dialog shows
+it with a `Personal` label to distinguish this build; the Git branch and commit
+identify the exact personal additions.
 
 ## Keep PRs independent
 
