@@ -2149,6 +2149,11 @@ private slots:
         QVERIFY(window);
         window->show();
         QVERIFY(QTest::qWaitForWindowExposed(window));
+        // Establish a wide window explicitly: the offscreen platform can reuse
+        // the preceding narrow-window test's geometry for a new window.
+        window->resize(1280, 820);
+        QCoreApplication::processEvents();
+        QTRY_COMPARE(window->width(), 1280);
         window->requestActivate();
         QTRY_VERIFY(window->isActive());
         auto *editor = window->findChild<QQuickItem *>(QStringLiteral("sourceEditor"));
