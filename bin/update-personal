@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+cd "$ROOT"
+
+if [ "$(git branch --show-current)" != "personal" ]; then
+    echo "Switch to the personal branch before updating: git switch personal" >&2
+    exit 1
+fi
+
+if [ -n "$(git status --porcelain)" ]; then
+    echo "Commit or set aside your working changes before updating." >&2
+    exit 1
+fi
+
+git fetch upstream
+git switch master
+git merge --ff-only upstream/master
+git switch personal
+git merge --no-edit master
+
+"$ROOT/bin/test"
+"$ROOT/bin/build"
