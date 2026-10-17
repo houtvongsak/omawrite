@@ -30,7 +30,8 @@ ApplicationWindow {
     readonly property int footerHeight: scaledSize(32)
     // Never wider than the Flickable's viewport, whatever the floor asks for:
     // a tiling compositor can resize the window below its minimum width.
-    readonly property int editorWidth: Math.min(
+    readonly property bool fullWidth: backend.fullWidth
+    readonly property int editorWidth: fullWidth ? Math.max(0, width - 48) : Math.min(
         Math.round(writerFontMetrics.averageCharacterWidth * 65),
         Math.max(360, width - Math.round(writerFontMetrics.averageCharacterWidth * 20)),
         Math.max(0, width - 48))
@@ -206,6 +207,11 @@ ApplicationWindow {
     }
 
     Shortcut {
+        sequences: ["Ctrl+Shift+W", "Alt+W", "Ctrl+Alt+W"]
+        onActivated: backend.fullWidth = !backend.fullWidth
+    }
+
+    Shortcut {
         sequence: "Ctrl+O"
         onActivated: backend.openDialog()
     }
@@ -371,7 +377,7 @@ ApplicationWindow {
         // (Material Dialog.qml:14); as a child, the default content item sizes
         // to it without the feedback.
         Label {
-            text: "Ctrl+S  Save\nCtrl+Shift+S  Save As\nCtrl+O  Open\nCtrl+N  New Window\nCtrl+F  Find\nCtrl+H  Find and Replace\nCtrl+B  Bold\nCtrl+I  Italic\nCtrl+Shift+X  Strikethrough\nCtrl+K  Link\nCtrl+Shift+C  Copy as HTML\nCtrl+P  Print\nCtrl+= / Ctrl+-  Text Size\nCtrl+0  Reset Text Size\nF11 / Super+F  Fullscreen\nCtrl+?  Shortcuts"
+            text: "Ctrl+S  Save\nCtrl+Shift+S  Save As\nCtrl+O  Open\nCtrl+N  New Window\nCtrl+F  Find\nCtrl+H  Find and Replace\nCtrl+B  Bold\nCtrl+I  Italic\nCtrl+Shift+X  Strikethrough\nCtrl+K  Link\nCtrl+Shift+C  Copy as HTML\nCtrl+P  Print\nCtrl+= / Ctrl+-  Text Size\nCtrl+0  Reset Text Size\nCtrl+Shift+W  Full / Standard Width\nF11 / Super+F  Fullscreen\nCtrl+?  Shortcuts"
             lineHeight: 1.5
         }
     }
