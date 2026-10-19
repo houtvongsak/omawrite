@@ -402,14 +402,12 @@ ApplicationWindow {
 
     ShortcutsDialog {
         id: shortcutsDialog
-        edition: "Personal"
         darkMode: win.darkMode
         textScale: win.textScale
         textColor: win.textColor
         activeButtonColor: backend.themeAccent
         containerWidth: win.width
         containerHeight: win.height
-        extraShortcuts: [{ key: "Ctrl+Shift+W\nAlt+W / Ctrl+Alt+W", desc: "Full / Standard Width" }]
     }
 
     Item {

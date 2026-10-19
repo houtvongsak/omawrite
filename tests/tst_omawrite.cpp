@@ -2715,8 +2715,7 @@ private slots:
             QVERIFY(versionLabel);
             QVERIFY(versionLabel->property("visible").toBool());
             QCOMPARE(versionLabel->property("text").toString(),
-                     QStringLiteral("Omawrite ") + QCoreApplication::applicationVersion()
-                         + QStringLiteral(" · Personal"));
+                     QStringLiteral("Omawrite ") + QCoreApplication::applicationVersion());
             QTest::keyClick(window, Qt::Key_Minus, Qt::ControlModifier);
             QCOMPARE(backend.textScale(), scale);
             QVERIFY(dialog->property("x").toReal() >= 0);
