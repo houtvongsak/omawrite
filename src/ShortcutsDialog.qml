@@ -13,7 +13,11 @@ Dialog {
     property real textScale: 1
     property int containerWidth: 1280
     property int containerHeight: 820
+    property string edition: ""
     readonly property string versionText: "Omawrite " + Qt.application.version
+        + (edition.length > 0 ? " · " + edition : "")
+    // Personal features can add bindings without coupling this dialog to them.
+    property var extraShortcuts: []
     readonly property var shortcuts: [
         { key: "Ctrl+S", desc: "Save" },
         { key: "Ctrl+Shift+S", desc: "Save As" },
@@ -38,7 +42,7 @@ Dialog {
         { key: "Ctrl+0", desc: "Reset Text Size" },
         { key: "Ctrl+scroll", desc: "Change Text Size" },
         { key: "Ctrl+? / Ctrl+/ / F1", desc: "Shortcuts" }
-    ]
+    ].concat(extraShortcuts)
 
     title: "Keyboard shortcuts"
     modal: true
