@@ -27,3 +27,8 @@ git push origin personal
 ```
 
 Run the local app with `./build/omawrite`. Use `./bin/install` to install it.
+
+Upstream builds with CMake and packages Omawrite in omarchy-pkgs, so the fork
+keeps its own `pkgbuild/PKGBUILD`, `pkgbuild/omawrite.install` and `bin/install`.
+Bump `pkgver` in the PKGBUILD to the upstream release after each update.
+The full-width label is in `src/i18n/en.json`; other languages fall back to it.
